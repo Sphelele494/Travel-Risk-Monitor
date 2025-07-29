@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { EnvelopeIcon } from '@heroicons/react/24/outline';
 import { UserIcon } from '@heroicons/react/24/outline';
 import { Navigation } from "lucide-react";
+import {toast, Toaster} from 'sonner';
+import { ApiClient } from "./lib/api-client";
 
 function Signup() {
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [formData, setFormData] = useState({
         fullName: '',
@@ -32,6 +35,25 @@ function Signup() {
     const toggleConfirmPasswordVisibility = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
+    const registerUser = async () => {
+        if((formData.password!==formData.confirmPassword)){
+            toast.error("Passwords must match");
+            return;
+        }
+    try {
+        const response = await ApiClient.post("/signup", {
+            fullName:formData.fullName,
+            username: formData.username,
+            email: formData.email,
+            password: formData.password
+        });
+        console.log(response.data); 
+        navigate("/login");
+        toast.success("Successfully registered"+response.data);
+    } catch (error) {
+        console.error("Signup failed:", error.response?.data || error.message);
+    }
+};
 
     return (
         <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -129,6 +151,7 @@ function Signup() {
                 <div className="flex justify-center items-center my-4">
                     <button 
                         type="submit"
+                        onClick={registerUser}
                         className="flex justify-center items-center w-full px-6 py-2 bg-orange-500 text-white border border-transparent rounded-md shadow-md hover:bg-white hover:text-orange-500 hover:border-orange-400 hover:shadow-[0_0_10px_rgba(255,115,0,0.3)] transition duration-300"
                     >
                         Sign up

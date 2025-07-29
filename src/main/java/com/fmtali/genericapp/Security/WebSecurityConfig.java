@@ -12,6 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import com.fmtali.genericapp.Service.UserService;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 /**
  * Configuration class for Spring Security in the application.
@@ -50,8 +55,11 @@ private static final String[] WHITELIST = {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors()
+            .and()
             .authorizeRequests()
             .antMatchers(WHITELIST).permitAll()
+            .antMatchers("/api/incidents/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()
@@ -67,7 +75,9 @@ private static final String[] WHITELIST = {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/logout?success=true")
             .and()
-            .httpBasic();
+            .httpBasic()
+            .and()
+            .formLogin().disable();
 
         //remove after moving from H2 database
         http.csrf().disable();
@@ -102,4 +112,21 @@ private static final String[] WHITELIST = {
                    .authenticationProvider(authProvider())
                    .build();
     }
+
+
+
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(List.of("http://localhost:5173")); // React dev server
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(List.of("*"));
+    configuration.setAllowCredentials(true); // Only needed if sending cookies or auth
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+
+    return source;
+}
+
 }

@@ -13,6 +13,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/submissions")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 public class SubmissionController {
 

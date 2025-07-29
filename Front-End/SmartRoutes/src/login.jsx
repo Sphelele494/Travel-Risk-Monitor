@@ -5,6 +5,9 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { EnvelopeIcon } from '@heroicons/react/24/outline';
 import { UserIcon } from '@heroicons/react/24/outline';
 import { Navigation } from "lucide-react";
+import { ApiClient } from "./lib/api-client";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
@@ -13,7 +16,7 @@ function Login() {
         password: '',
         rememberMe: false
     });
-
+    const navigate = useNavigate();
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData(prev => ({
@@ -25,6 +28,34 @@ function Login() {
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
+const LoginUser = async () => {
+    try {
+        const response = await ApiClient.post("/login", {
+            username: formData.email,
+            password: formData.password
+        });
+
+        if (response.status === 200) {
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('Data', JSON.stringify(response.data));
+
+            toast.success("Login successful. Welcome!");
+            navigate("/dashboard");
+        } else {
+            console.log("Unexpected status:", response.status);
+            toast.warning("Unexpected login response.");
+        }
+    } catch (error) {
+        if (error.response) {
+            toast.error("Login failed: " + error.response.data);
+            console.log("Login failed:", error.response.data);
+        } else {
+            toast.error("Network error. Please try again.");
+            console.log("Error:", error.message);
+        }
+    }
+};
 
     return (
         <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -88,7 +119,8 @@ function Login() {
                 </div>
 
                 <div className="flex justify-center items-center my-4">
-                    <button className="flex justify-center items-center w-full px-6 py-2 bg-orange-500 text-white border border-transparent rounded-md shadow-md hover:bg-white hover:text-orange-500 hover:border-orange-400 hover:shadow-[0_0_10px_rgba(255,115,0,0.3)] transition duration-300">
+                    <button onClick = {LoginUser}
+                    className="flex justify-center items-center w-full px-6 py-2 bg-orange-500 text-white border border-transparent rounded-md shadow-md hover:bg-white hover:text-orange-500 hover:border-orange-400 hover:shadow-[0_0_10px_rgba(255,115,0,0.3)] transition duration-300">
                         Sign in
                         <ArrowRightIcon className="h-5 w-5 ml-2" />
                     </button>

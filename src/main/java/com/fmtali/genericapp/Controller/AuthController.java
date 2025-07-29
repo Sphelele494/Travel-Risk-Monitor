@@ -3,12 +3,25 @@ package com.fmtali.genericapp.Controller;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.*;
+
+import com.fmtali.genericapp.Models.LoginRequest;
 import com.fmtali.genericapp.Models.Submission;
 import com.fmtali.genericapp.Models.User;
 import com.fmtali.genericapp.Service.AuthService;
@@ -25,17 +38,25 @@ import java.util.Comparator;
  * Controller responsible for handling authentication-related requests such as 
  * user signup, login, and accessing the dashboard.
  */
+@CrossOrigin(origins = "http://localhost:5173")
 @Controller
 public class AuthController {
 
 
-
+private final AuthenticationManager authenticationManager;
      private final UserService userService;
     private final AuthService authService;
     private final SubmissionService submissionService;
+    
 
     @Autowired
-    public AuthController(UserService userService, AuthService authService, SubmissionService submissionService) {
+    public AuthController(
+        AuthenticationManager authenticationManager,
+        UserService userService,
+        AuthService authService,
+        SubmissionService submissionService
+    ) {
+        this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.authService = authService;
         this.submissionService = submissionService;
@@ -62,9 +83,13 @@ public class AuthController {
      * @return redirection to the login page after successful registration
      */
     @PostMapping("/signup")
-    public String registerUser(@ModelAttribute("user") User user) {
-        userService.createUser(user);
-        return "redirect:/login"; // Redirect to login page after successful registration
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        try {
+            userService.createUser(user);
+            return ResponseEntity.ok("User registered successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Registration failed: " + e.getMessage());
+        }
     }
 
     /**
@@ -73,10 +98,21 @@ public class AuthController {
      *
      * @return the name of the login template
      */
-    @GetMapping("/login")
-    public String showLoginForm() {
-        return "login";
+ @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            );
+            return ResponseEntity.ok("Login successful");
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(401).body("Invalid username or password");
+        }
     }
+
+
+
+
 
     /**
      * Handles GET requests to "/dashboard".
