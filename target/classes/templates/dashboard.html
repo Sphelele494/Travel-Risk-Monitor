@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2>Welcome, <span th:text="${user.fullName}">User</span>!</h2>
+    <p>Username: <span th:text="${user.username}"></span></p>
+    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>Role: <span th:text="${user.role}"></span></p>
+
+    <p>Last Submission Title: 
+        <span th:text="${lastSubmission != null} ? ${lastSubmission.title} : 'No submissions yet'"></span>   
+    </p>
+
+       <p>Last Submission content: 
+        <span th:text="${lastSubmission != null} ? ${lastSubmission.content} : 'No submissions yet'"></span>   
+    </p>
+    <p>Last Submission Location: 
+        <span th:text="${lastSubmission != null} ? ${lastSubmission.location} : 'No submissions yet'"></span>
+    </p>
+
+    <p>Last Submission Severity: 
+        <span th:text="${lastSubmission != null} ? ${lastSubmission.severity} : 'No submissions yet'"></span>
+    </p>
+
+    <p>Last Submission Created At: 
+        <span th:text="${lastSubmission != null} ? ${#temporals.format(lastSubmission.createdAt, 'dd/MM/yyyy HH:mm:ss')} : 'No submissions yet'"></span>
+    </p>
+
+
+    <!-- If User has no createdAt field, comment or remove this line -->
+    <!-- <p>Account Created: <span th:text="${user.createdAt}"></span></p> -->
+
+    <h2>Submit a New Pothole</h2>
+
+    <form th:action="@{/submit-pothole}" th:object="${submission}" method="post">
+        <label for="title">Title:</label>
+        <input type="text" th:field="*{title}" id="title" required /><br/>
+
+        <label for="content">Description:</label>
+        <textarea th:field="*{content}" id="content"></textarea><br/>
+
+        <label for="location">Location:</label>
+        <input type="text" th:field="*{location}" id="location" /><br/>
+
+        <label for="severity">Severity:</label>
+        <select th:field="*{severity}" id="severity">
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+        </select><br/>
+
+        <button type="submit">Submit</button>
+
+
+
+
+        
+    </form>
+
+    <a th:href="@{/logout}">Logout</a>
+</body>
+</html>
