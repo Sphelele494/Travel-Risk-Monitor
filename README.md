@@ -27,7 +27,6 @@ A full-stack application that analyzes travel paths in real-time, identifying po
 *Frontend:*
 - React.js 18
 - Axios (API calls)
-- Material-UI (Components)
 - React Router (Navigation)
 
 *Coming Soon:*
