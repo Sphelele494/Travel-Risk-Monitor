@@ -27,7 +27,6 @@ A full-stack application that analyzes travel paths in real-time, identifying po
 *Frontend:*
 - React.js 18
 - Axios (API calls)
-- Material-UI (Components)
 - React Router (Navigation)
 
 *Coming Soon:*
@@ -44,5 +43,5 @@ A full-stack application that analyzes travel paths in real-time, identifying po
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/yourusername/taskflow.git](https://github.com/Sphelele494/Travel-Risk-Monitor.git)
+git clone https://github.com/Sphelele494/Travel-Risk-Monitor.git
 
