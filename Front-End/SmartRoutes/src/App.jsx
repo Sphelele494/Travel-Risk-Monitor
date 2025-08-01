@@ -1,12 +1,13 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Signup from './Signup';
+import Signup from './signup';
 import Login from './Login';
 import UserDashboard from './user-dashboard';
 import ProtectedRoute from "./protectedroute"; 
 import NotFound from "./NotFound";
 import SmartRoutesDashboard from "./SmartRoutesDashboard";
 import { Toaster } from "sonner";
+import 'leaflet/dist/leaflet.css';
 
 function App() {
   return (
@@ -17,8 +18,6 @@ function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        
-        {/* ✅ Protect this route */}
         <Route
           path="/dashboard"
           element={
