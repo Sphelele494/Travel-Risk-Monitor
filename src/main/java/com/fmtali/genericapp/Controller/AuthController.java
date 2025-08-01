@@ -98,13 +98,19 @@ private final AuthenticationManager authenticationManager;
      *
      * @return the name of the login template
      */
- @PostMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
-            return ResponseEntity.ok("Login successful");
+            // Fetch user details after authentication
+            User user = userService.findByUsername(request.getUsername())
+                    .orElse(null);
+            if (user == null) {
+                return ResponseEntity.status(404).body("User not found");
+            }
+            return ResponseEntity.ok(user);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }

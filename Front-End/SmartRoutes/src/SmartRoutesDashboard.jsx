@@ -387,7 +387,7 @@ useEffect(() => {
     </header>
 
       <div className="text-center mb-6">
-        <p className="text-lg font-medium">Welcome back, <span className="font-medium">loyal Customer</span> help keep South African roads safe by reporting incidents and staying informed.</p>
+        <p className="text-lg font-medium">Welcome back, <span className="font-medium">{ JSON.parse(localStorage.getItem('Data')).fullName}</span> help keep South African roads safe by reporting incidents and staying informed.</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -409,7 +409,7 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-hidden mb-6">
+   {/*   <div className="bg-white rounded-xl shadow overflow-hidden mb-6">
         <div className="flex border-b">
           <button onClick={() => setActiveTab('map')} className={`flex-1 py-2 text-center font-semibold ${activeTab === 'map' ? 'bg-gray-50' : 'text-gray-500'}`}>Live Map</button>
           <button onClick={() => setActiveTab('feed')} className={`flex-1 py-2 text-center font-semibold ${activeTab === 'feed' ? 'bg-gray-50' : 'text-gray-500'}`}>Incident Feed</button>
@@ -490,7 +490,7 @@ useEffect(() => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </div>*/}
 
       <div className="mt-6 flex justify-between items-center">
         <div className="text-sm text-gray-600">Select an incident marker on the map to view details</div>
