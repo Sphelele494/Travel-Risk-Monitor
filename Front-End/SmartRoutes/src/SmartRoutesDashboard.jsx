@@ -394,6 +394,13 @@ export default function SmartRoutesDashboard() {
       </header>
 
       <div className="text-center mb-6">
+        <p className="text-lg font-medium">Welcome back, <span className="font-medium">{ JSON.parse(localStorage.getItem('Data')).fullName}</span> help keep South African roads safe by reporting incidents and staying informed.</p>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white rounded-xl shadow p-4 text-center">
+          <p className="text-md text-blue-600">Total Reports</p>
+          <p className="text-xl font-bold text-blue-600">0</p>
         <div className="flex items-center justify-center">
           <p className="text-lg font-medium text-gray-700">
           Welcome back, <span className="font-semibold">"User Name"</span> where to next? 
@@ -432,6 +439,7 @@ export default function SmartRoutesDashboard() {
         </div>
       </div>
 
+   {/*   <div className="bg-white rounded-xl shadow overflow-hidden mb-6">
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-6">
         <div className="flex border-b">
           <button 
@@ -558,6 +566,12 @@ export default function SmartRoutesDashboard() {
             </motion.div>
           )}
         </AnimatePresence>
+      </div>*/}
+
+      <div className="mt-6 flex justify-between items-center">
+        <div className="text-sm text-gray-600">Select an incident marker on the map to view details</div>
+        <div className="text-sm text-gray-600">Recent Reports</div>
+      </div>
       </div>
     </div>
   );

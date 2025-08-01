@@ -39,7 +39,7 @@ const LoginUser = async () => {
         if (response.status === 200) {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('Data', JSON.stringify(response.data));
-
+            console.log("Login successful:", localStorage.getItem('Data'));    
             toast.success("Login successful. Welcome!");
             navigate("/dashboard");
         } else {
