@@ -1,10 +1,18 @@
-// src/main/java/com/fmtali/genericapp/Model/Incident.java
 package com.fmtali.genericapp.Models;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.*;
-import lombok.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -12,35 +20,41 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Incident {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
     private String location;
-    private String time;
-    
+
+    @Column(updatable = false)
+    private LocalDateTime creationTime; // Changed from LocalTime to LocalDateTime
+
     @Column(length = 1000)
     private String description;
 
     private String reporter;
-    private String severity;  // e.g., "low", "medium", "high", "critical"
-    private String type;      // e.g., "crime", "road hazard", etc.
+    private String severity;
+    private String type;
     private boolean verified;
     private int likes;
 
+    @PrePersist
+    protected void onCreate() {
+        this.creationTime = LocalDateTime.now();
+    }
+
     public Incident(String title, String location, String description,
-                String reporter, String severity, String type,
-                boolean verified, int likes) {
-    this.title = title;
-    this.location = location;
-    this.description = description;
-    this.reporter = reporter;
-    this.severity = severity;
-    this.type = type;
-    this.verified = verified;
-    this.likes = likes;
-    this.time = LocalDateTime.now().toString(); 
-}
+            String reporter, String severity, String type,
+            boolean verified, int likes) {
+        this.title = title;
+        this.location = location;
+        this.description = description;
+        this.reporter = reporter;
+        this.severity = severity;
+        this.type = type;
+        this.verified = verified;
+        this.likes = likes;
+        // creationTime will be auto-set by @PrePersist
+    }
 }

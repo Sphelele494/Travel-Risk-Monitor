@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserLocation {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long userId;
@@ -28,7 +27,4 @@ public class UserLocation {
     private double homeLongitude;
     private double workLatitude;
     private double workLongitude;
-
-
-    
 }
