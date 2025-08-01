@@ -27,8 +27,7 @@ public class Incident {
     private String title;
     private String location;
 
-    @Column(updatable = false)
-    private LocalDateTime creationTime; // Changed from LocalTime to LocalDateTime
+    private String time; // Changed from LocalTime to LocalDateTime
 
     @Column(length = 1000)
     private String description;
@@ -38,11 +37,6 @@ public class Incident {
     private String type;
     private boolean verified;
     private int likes;
-
-    @PrePersist
-    protected void onCreate() {
-        this.creationTime = LocalDateTime.now();
-    }
 
     public Incident(String title, String location, String description,
             String reporter, String severity, String type,
@@ -55,6 +49,7 @@ public class Incident {
         this.type = type;
         this.verified = verified;
         this.likes = likes;
+        this.time = LocalDateTime.now().toString(); // Set time to current time
         // creationTime will be auto-set by @PrePersist
     }
 }

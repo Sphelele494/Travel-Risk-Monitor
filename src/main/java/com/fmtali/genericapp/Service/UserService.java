@@ -24,10 +24,9 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService{
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -106,6 +105,10 @@ public class UserService implements UserDetailsService{
                 grantedAuthorities // You can set authorities based on user.getRole() if needed
         );
 
+    }
+
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
 }

@@ -32,4 +32,9 @@ public class UserLocationController {
             @RequestBody UserLocation userLocationDetails) {
         return userLocationService.updateUserLocation(userId, userLocationDetails);
     }
+
+    @PostMapping
+    public UserLocation createUserLocation(@RequestBody UserLocation userLocation) {
+        return userLocationService.createUserLocation(userLocation);
+    }
 }
