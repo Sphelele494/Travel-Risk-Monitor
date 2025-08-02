@@ -1,7 +1,5 @@
 package com.fmtali.genericapp.Controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,31 +28,28 @@ import com.fmtali.genericapp.Service.UserService;
 import java.security.Principal;
 import java.util.Comparator;
 
-
 /**
  * @author Nhlamulo Mashele
  * 
- * Controller responsible for handling authentication-related requests such as 
- * user signup, login, and accessing the dashboard.
+ *         Controller responsible for handling authentication-related requests
+ *         such as
+ *         user signup, login, and accessing the dashboard.
  */
 @CrossOrigin(origins = "http://localhost:5173")
 @Controller
 public class AuthController {
 
-
-private final AuthenticationManager authenticationManager;
-     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
     private final AuthService authService;
     private final SubmissionService submissionService;
-    
 
     @Autowired
     public AuthController(
-        AuthenticationManager authenticationManager,
-        UserService userService,
-        AuthService authService,
-        SubmissionService submissionService
-    ) {
+            AuthenticationManager authenticationManager,
+            UserService userService,
+            AuthService authService,
+            SubmissionService submissionService) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.authService = authService;
@@ -98,31 +92,26 @@ private final AuthenticationManager authenticationManager;
      *
      * @return the name of the login template
      */
- @PostMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
             Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-            );
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             return ResponseEntity.ok("Login successful");
         } catch (AuthenticationException e) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }
     }
 
-
-
-
-
     /**
      * Handles GET requests to "/dashboard".
      * Displays the dashboard page after successful login.
      *
-     * @param model the model to pass user data to the view
+     * @param model     the model to pass user data to the view
      * @param principal the authenticated user's security context
      * @return the name of the dashboard template
      */
-  @GetMapping("/dashboard")
+    @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {
         String username = principal.getName();
         User user = userService.findByUsername(username).orElse(null);
@@ -143,22 +132,13 @@ private final AuthenticationManager authenticationManager;
         return "dashboard";
     }
 
-
     @PostMapping("/submit-pothole")
-public String submitPothole(@ModelAttribute Submission submission, Principal principal) {
-    String username = principal.getName();
-    User user = userService.findByUsername(username)
+    public String submitPothole(@ModelAttribute Submission submission, Principal principal) {
+        String username = principal.getName();
+        User user = userService.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-    submissionService.createSubmission(user.getId(), submission);
-    return "redirect:/dashboard";
-}
-
-
-
-
-
-
-
-
+        submissionService.createSubmission(user.getId(), submission);
+        return "redirect:/dashboard";
+    }
 
 }

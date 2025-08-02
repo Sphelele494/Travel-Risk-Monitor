@@ -2,13 +2,20 @@
 package com.fmtali.genericapp.Controller;
 
 import com.fmtali.genericapp.Models.Alerts;
+import com.fmtali.genericapp.Models.WeatherAlert;
 import com.fmtali.genericapp.Service.AlertService;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
+
+import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/alerts")
@@ -57,5 +64,39 @@ public class AlertsController {
     public void deleteAlert(@PathVariable Long id) {
         alertService.deleteAlert(id);
     }
-}
 
+    // Dealing with weather alerts
+    @GetMapping("/check")
+    public ResponseEntity<?> checkWeatherAndAlert(
+            @RequestParam double lat,
+            @RequestParam double lon) {
+
+        WeatherAlert alert = alertService.checkWeatherAndAlert(lat, lon);
+
+        if (alert == null) {
+            return ResponseEntity.ok().body(Map.of("message", "No severe weather at this location."));
+        }
+
+        return ResponseEntity.ok(alert);
+    }
+
+    @GetMapping("/weather/raw")
+    public ResponseEntity<?> getRawWeather(@RequestParam double lat, @RequestParam double lon) {
+        JSONObject data = alertService.getRawWeatherData(lat, lon);
+        if (data == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Unable to fetch weather data."));
+        }
+        return ResponseEntity.ok(data.toMap());
+    }
+
+    @GetMapping("/weather/summary")
+    public ResponseEntity<?> getSimplifiedWeather(@RequestParam double lat, @RequestParam double lon) {
+        Map<String, Object> summary = alertService.getSimplifiedWeather(lat, lon);
+        if (summary == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Unable to fetch weather summary."));
+        }
+        return ResponseEntity.ok(summary);
+    }
+}

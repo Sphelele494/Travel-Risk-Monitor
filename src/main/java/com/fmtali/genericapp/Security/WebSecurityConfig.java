@@ -29,11 +29,10 @@ public class WebSecurityConfig {
     @Autowired
     private UserService userService;
 
-private static final String[] WHITELIST = {
-    "/", "/login", "/signup", "/db-console/**", "/css/**", "/js/**",
-    "/images/**", "/api/users/**",
-};
-
+    private static final String[] WHITELIST = {
+            "/", "/login", "/signup", "/db-console/**", "/css/**", "/js/**",
+            "/images/**", "/api/users/**", "/api/alerts/check", "/api/alerts/weather/summary**",
+    };
 
     /**
      * Bean for password encoding using BCrypt.
@@ -55,14 +54,14 @@ private static final String[] WHITELIST = {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors()
-            .and()
-            .authorizeRequests()
-            .antMatchers(WHITELIST).permitAll()
-            .antMatchers("/api/incidents/**").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .formLogin()
+                .cors()
+                .and()
+                .authorizeRequests()
+                .antMatchers(WHITELIST).permitAll()
+                .antMatchers("/api/incidents/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .usernameParameter("username")
@@ -70,16 +69,16 @@ private static final String[] WHITELIST = {
                 .defaultSuccessUrl("/dashboard", true)
                 .failureUrl("/login?error=true")
                 .permitAll()
-            .and()
-            .logout()
+                .and()
+                .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/logout?success=true")
-            .and()
-            .httpBasic()
-            .and()
-            .formLogin().disable();
+                .and()
+                .httpBasic()
+                .and()
+                .formLogin().disable();
 
-        //remove after moving from H2 database
+        // remove after moving from H2 database
         http.csrf().disable();
         http.headers().frameOptions().disable();
 
@@ -87,9 +86,11 @@ private static final String[] WHITELIST = {
     }
 
     /**
-     * Provides the authentication provider using the custom UserService and password encoder.
+     * Provides the authentication provider using the custom UserService and
+     * password encoder.
      * 
-     * @return DaoAuthenticationProvider configured with userService and password encoder.
+     * @return DaoAuthenticationProvider configured with userService and password
+     *         encoder.
      */
     @Bean
     public DaoAuthenticationProvider authProvider() {
@@ -109,24 +110,22 @@ private static final String[] WHITELIST = {
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                   .authenticationProvider(authProvider())
-                   .build();
+                .authenticationProvider(authProvider())
+                .build();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // React dev server
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true); // Only needed if sending cookies or auth
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
 
-@Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:5173")); // React dev server
-    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(List.of("*"));
-    configuration.setAllowCredentials(true); // Only needed if sending cookies or auth
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-
-    return source;
-}
+        return source;
+    }
 
 }

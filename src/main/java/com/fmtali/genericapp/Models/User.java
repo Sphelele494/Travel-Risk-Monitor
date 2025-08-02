@@ -3,6 +3,7 @@ package com.fmtali.genericapp.Models;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -25,6 +26,8 @@ public class User {
     @Column(nullable = false)
     private String fullName;
 
+    private String vehicleType; // For hail sensitivity(todo)
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -41,4 +44,10 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private UserLocation userLocation;
+
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval =
+    // true)
+    // @Builder.Default
+    // @JsonManagedReference
+    // private List<Route> routes = new ArrayList<>();
 }
