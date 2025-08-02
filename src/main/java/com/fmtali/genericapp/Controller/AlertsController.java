@@ -4,6 +4,8 @@ package com.fmtali.genericapp.Controller;
 import com.fmtali.genericapp.Models.Alerts;
 import com.fmtali.genericapp.Models.WeatherAlert;
 import com.fmtali.genericapp.Service.AlertService;
+import com.fmtali.genericapp.Service.RiskAssessmentService;
+
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,8 @@ import org.springframework.http.ResponseEntity;
 @RequiredArgsConstructor
 public class AlertsController {
     private final AlertService alertService;
+
+    private final RiskAssessmentService riskAssessmentService;
 
     @GetMapping
     public Page<Alerts> getAlerts(
@@ -99,4 +103,5 @@ public class AlertsController {
         }
         return ResponseEntity.ok(summary);
     }
+
 }

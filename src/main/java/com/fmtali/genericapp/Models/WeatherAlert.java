@@ -13,6 +13,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class WeatherAlert {
 
     @Id
